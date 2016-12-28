@@ -13,11 +13,17 @@ if ARGV[0] == '--help'
 end
 
 begin
+  region = ARGV[0]
+  ip_addresses = []
+  
   open(IP_RANGES_URL) do |f|
     json = JSON.parse(f.read)
     json['prefixes'].each do |prefix|
-      puts prefix['ip_prefix'] if prefix['region'] == ARGV[0]
+      ip_addresses << prefix['ip_prefix'] if prefix['region'] == region
     end
+    
+    abort "No IP addresses for region '#{region}'" if ip_addresses.empty?    
+    ip_addresses.each { |ip_address| puts ip_address }
   end
 rescue OpenURI::HTTPError => err
   abort "Unable to open document at #{IP_RANGES_URL} (#{err})"
