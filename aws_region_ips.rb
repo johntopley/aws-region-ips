@@ -3,6 +3,14 @@ require 'open-uri'
 require 'json'
 
 IP_RANGES_URL = 'https://ip-ranges.amazonaws.com/ip-ranges.json'.freeze
+USAGE_TEXT    = 'Usage: aws_regions_ips.rb <region>'.freeze
+
+abort USAGE_TEXT if ARGV.length.zero?
+
+if ARGV[0] == '--help'
+  puts USAGE_TEXT
+  exit
+end
 
 begin
   open(IP_RANGES_URL) do |f|
@@ -12,6 +20,5 @@ begin
     end
   end
 rescue OpenURI::HTTPError => err
-  STDERR.puts("Unable to open document at #{IP_RANGES_URL} (#{err})")
-  exit(1)
+  abort "Unable to open document at #{IP_RANGES_URL} (#{err})"
 end
